@@ -6,8 +6,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.atan2
 import kotlin.math.min
 import kotlin.random.Random
@@ -18,12 +20,20 @@ class RainbowDrumView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private val _currentColor = MutableStateFlow<String>("")
+    var currentColor = _currentColor
+
     private val colors = arrayOf(
         Color.RED, Color.parseColor("#FF7F00"),
-        Color.YELLOW, Color.GREEN,
-        Color.BLUE, Color.parseColor("#4B0082"),
+        Color.YELLOW, Color.GREEN, Color.BLUE,
+        Color.parseColor("#00BFFF"),
         Color.parseColor("#8B00FF")
     )
+
+    private val colorsNames = arrayOf(
+        "Red","Violet", "BLue Light", "Blue", "Green", "Yellow", "Orange",
+    )
+
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -69,7 +79,7 @@ class RainbowDrumView @JvmOverloads constructor(
         val randomSector = Random.nextInt(0, sectorCount)
 
         val sweepAngle = 360f / sectorCount
-        val targetAngle = randomSector * sweepAngle + sweepAngle / 2
+        val targetAngle = randomSector * sweepAngle
 
         val finalAngle = numberOfRotations * 360 + targetAngle
 
@@ -79,21 +89,32 @@ class RainbowDrumView @JvmOverloads constructor(
             addUpdateListener {
                 currentRotation = it.animatedValue as Float
                 invalidate()
+                _currentColor.value = getCurrentColor()
             }
         }
         animator.start()
     }
 
-    fun getCurrentColor(): Int {
+
+
+    fun getCurrentColor(): String {
         val sectorCount = colors.size
         val sweepAngle = 360f / sectorCount
 
         val normalizedRotation = (currentRotation % 360 + 360) % 360
 
-        val sectorIndex = ((normalizedRotation + sweepAngle / 2) / sweepAngle).toInt() % sectorCount
+        val adjustedRotation = (normalizedRotation + 90) % 360
 
-        return colors[sectorIndex]
+        val sectorIndex = (adjustedRotation / sweepAngle).toInt() % sectorCount
+
+        Log.d("getCurrentColor", "getCurrentColor: $sectorIndex, $adjustedRotation")
+
+        return colorsNames[sectorIndex]
     }
+
+
+
+
 
 
 

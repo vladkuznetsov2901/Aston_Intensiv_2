@@ -5,7 +5,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.aston_intensiv_2.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -16,9 +18,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.spinBtn.setOnClickListener {
-            val countOfSpin = Random.nextInt(8, 32)
-            binding.rainbowDrum.rotateDrumToRandomSector(countOfSpin)
+            lifecycleScope.launch {
+
+                val countOfSpin = Random.nextInt(8, 32)
+                binding.rainbowDrum.rotateDrumToRandomSector(countOfSpin)
+                binding.rainbowDrum.currentColor.collect {
+                    binding.currentColor.text = it
+                }
+            }
         }
+
 
     }
 }
