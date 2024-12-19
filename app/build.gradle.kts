@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
 }
 
 android {
@@ -46,8 +47,10 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation (libs.androidx.fragment.ktx)
-
-
+    implementation(libs.okhttp)
+    implementation(libs.glide)
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
+    kapt(libs.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

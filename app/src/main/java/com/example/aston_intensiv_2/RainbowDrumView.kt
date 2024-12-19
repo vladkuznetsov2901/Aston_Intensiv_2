@@ -1,5 +1,6 @@
 package com.example.aston_intensiv_2
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -23,6 +24,9 @@ class RainbowDrumView @JvmOverloads constructor(
     private val _currentColor = MutableStateFlow<String>("")
     var currentColor = _currentColor
 
+    private var onDrumStoppedListener: OnDrumStoppedListener? = null
+
+
     private val colors = arrayOf(
         Color.RED, Color.parseColor("#FF7F00"),
         Color.YELLOW, Color.GREEN, Color.BLUE,
@@ -31,7 +35,7 @@ class RainbowDrumView @JvmOverloads constructor(
     )
 
     private val colorsNames = arrayOf(
-        "Red","Violet", "BLue Light", "Blue", "Green", "Yellow", "Orange",
+        "RED", "VIOLET", "BLUE LIGHT", "BLUE", "GREEN", "YELLOW", "ORANGE"
     )
 
 
@@ -91,6 +95,17 @@ class RainbowDrumView @JvmOverloads constructor(
                 invalidate()
                 _currentColor.value = getCurrentColor()
             }
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {}
+
+                override fun onAnimationEnd(p0: Animator) {
+                    onDrumStoppedListener?.onDrumStopped(getCurrentColor())
+                }
+
+                override fun onAnimationCancel(p0: Animator) {}
+
+                override fun onAnimationRepeat(p0: Animator) {}
+            })
         }
         animator.start()
     }
@@ -113,7 +128,9 @@ class RainbowDrumView @JvmOverloads constructor(
     }
 
 
-
+    fun setOnDrumStoppedListener(listener: OnDrumStoppedListener) {
+        onDrumStoppedListener = listener
+    }
 
 
 
