@@ -1,5 +1,6 @@
 package com.example.aston_intensiv_2
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -10,6 +11,10 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import java.io.IOException
 
 class MainViewModel {
@@ -33,5 +38,36 @@ class MainViewModel {
             }
         }.start()
     }
+
+    fun saveBitmapToFile(context: Context, bitmap: Bitmap, filename: String): File? {
+        val directory = context.filesDir
+        val file = File(directory, filename)
+
+        try {
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
+
+        return file
+    }
+
+    fun loadImageFromFile(context: Context, fileName: String): Bitmap? {
+        val directory = context.filesDir
+        val file = File(directory, fileName)
+
+        return try {
+            val fileInputStream = FileInputStream(file)
+            BitmapFactory.decodeStream(fileInputStream)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
 
 }
