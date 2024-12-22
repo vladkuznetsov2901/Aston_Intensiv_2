@@ -72,7 +72,8 @@ class MainActivity : AppCompatActivity(), OnDrumStoppedListener {
             text = it
             binding.currentColor.text = it
         }
-        savedInstanceState.getString(IMAGE_KEY)?.let {
+        fileName = savedInstanceState.getString(IMAGE_KEY).toString()
+        fileName.let {
             val file = viewModel.loadImageFromFile(this, it)
             if (file != null) {
                 Glide.with(this)
