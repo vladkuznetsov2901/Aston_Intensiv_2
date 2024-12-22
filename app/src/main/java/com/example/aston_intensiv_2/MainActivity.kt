@@ -54,6 +54,13 @@ class MainActivity : AppCompatActivity(), OnDrumStoppedListener {
             }
         }
 
+        binding.resetButton.setOnClickListener {
+            fileName = ""
+            binding.currentColor.text = getString(R.string.none)
+            binding.customTextView.visibility = View.GONE
+            binding.imageFromAPI.setImageDrawable(null)
+        }
+
 
     }
 
